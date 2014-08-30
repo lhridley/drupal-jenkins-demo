@@ -1,0 +1,4 @@
+name = EntityInfo
+description = Provides technical and developer information for Entities in your Drupal Project
+core = 7.x
+package = Developer
