@@ -85,11 +85,6 @@ Check files for syntax errors. -->
     </phplint>
   </target>
 
-<!-- ### Javascript linting
-
-Checks code against [jslint](http://www.jslint.com/) to assure a coding
-standard is followed and detect potential problems. By default
-[jslint«](https://github.com/mikewest/JSLint) is used. -->
   <target name="lint-js"
           description="Check all Javascript files using JSlint"
           depends="init, setup-jslint4java, setup-jslint">
