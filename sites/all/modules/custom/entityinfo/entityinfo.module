@@ -48,7 +48,7 @@ function entityinfo_theme($existing, $type, $theme, $path) {
       'base_table_schema' => t('N/A'),
       'revision_table' => t('N/A'),
       'revision_table_schema' => t('N/A'),
-      'entity' => t('not specified'),
+      'entity' => t('not specif ied'),
       'fieldable' => FALSE,
     ),
   );
@@ -177,7 +177,7 @@ function theme_entityinfo_page($variables) {
   $output .= '<legend><span class="fieldset-legend">' . $variables['entity']['title'] . '</span></legend><div class="fieldset-wrapper">';
   $output .= '<h3>' . $variables['entity']['title'] . '</h3>';
   if (isset($variables['entity']['description'])) {
-    $output .= '<p>' . $variables['entity']['description'].'</p>';
+    $output .= '<p>' . $variables['entity']['description'] . '</p>';
   }
   $output .= theme('entityinfo_controller_data', $variables['entity']);
   $output .= $variables['database_info'];
@@ -198,29 +198,30 @@ function theme_entityinfo_database_info($variables) {
     $output .= '<p>';
     $output .= t('This entity is fieldable, which means that Drupal Fields can be added through the admin user interface to the entity bundles derived from this base entity.');
     $output .= '</p>';
-  } else {
+  }
+  else {
     $output .= '<p>';
     $output .= t('This entity is not fieldable, which means there are no additional Drupal Fields attached to the entity bundles derived from this base entity.');
     $output .= '</p>';
   }
   $output .= '<table>';
-  $output .= '<tr><th>' . t('Database table') . '</th><th>'.t('Database fields') .'</th></tr>';
+  $output .= '<tr><th>' . t('Database table') . '</th><th>' . t('Database fields') .'</th></tr>';
 
-  if(isset($variables['base_table'])) {
+  if (isset($variables['base_table'])) {
     $output .= '<tr><td>' . $variables['base_table'] . '</td>';
       $output .= '<td>';
         $fields = NULL;
-        foreach($variables['base_table_schema'] as $element) {
+        foreach ($variables['base_table_schema'] as $element) {
           $fields .= $element . ', ';
         }
         $fields = substr($fields, 0, strlen($fields) - 2);
       $output .= $fields;
       $output .= '</td></tr>';
-      if(isset($variables['revision_table'])) {
+      if (isset($variables['revision_table'])) {
         $output .= '<tr><td>' .$variables['revision_table'] . '</td>';
         $output .= '<td>';
           $fields = NULL;
-          foreach($variables['revision_table_schema'] as $element) {
+          foreach ($variables['revision_table_schema'] as $element) {
             $fields .= $element . ', ';
           }
           $fields = substr($fields, 0, strlen($fields) - 2);
@@ -232,7 +233,7 @@ function theme_entityinfo_database_info($variables) {
   }
   $output .= '</table>';
   if (count($variables['entity_table_schema']) > 0) {
-    foreach($variables['entity_table_schema'] as $table_type => $table_schema) {
+    foreach ($variables['entity_table_schema'] as $table_type => $table_schema) {
       $output .= theme('entityinfo_tableschema', array('table_type' => $table_type, 'table_schema' => $table_schema));
     }
   }
@@ -247,11 +248,11 @@ function theme_entityinfo_bundles($variables) {
 
   $output = NULL;
   $revisionspossible = FALSE;
-  if(isset($variables['entity']['revision table'])) $revisionspossible = TRUE;
+  if (isset($variables['entity']['revision table'])) $revisionspossible = TRUE;
   $output .= '<h4>' . t('Entity Bundles') . '</h4>';
   $output .= '<p>Listed below are the Entity Bundles derived from the entity type ' . $variables['entitytype'] . '.</p>';
 
-  foreach($variables['bundle'] as $key => $value) {
+  foreach ($variables['bundle'] as $key => $value) {
     $output .= '<fieldset class="collapsible collapsed">';
     $output .= '<legend><span class="fieldset-legend">' . $value['label'] . '</span></legend><div class="fieldset-wrapper">';
     $output .= '<h3>' . $value['label'] . '</h3>';
@@ -279,7 +280,7 @@ function theme_entityinfo_fields($variables) {
   $output .= '<h5>' . t('Fields for') . ' ' . $variables['bundlelabel'] . '</h5>';
   $output .= '<table>';
   $output .= '<tr><th>' . t('Field Machine Name (used for EntityFieldQueries)') . '</th><th>' . t('Field Name') . '</th><th>' . t('Description (if provided)') . '</th><th>' . t('Drupal Field Type / Module') . '</th><th>' . t('Database Table Names') .'</th><th>' . t('Required Field') . '</th></tr>';
-  foreach($variables['fields'] as $key => $field) {
+  foreach ($variables['fields'] as $key => $field) {
     $fieldstopass = array();
     $output .= '<tr>';
     $output .= '<td>' . $key . '</td><td>' . $field['label'] . '</td>';
@@ -295,7 +296,7 @@ function theme_entityinfo_fields($variables) {
     }
     $output .= '</td>';
     $output .= '<td>';
-      if($field['required']) {
+      if ($field['required']) {
         $output.= "TRUE";
       } else {
         $output .= "FALSE";
@@ -334,7 +335,7 @@ function theme_entityinfo_tableschema($variables) {
   $output .= '<p>* - ' . t('required field') . '</p>';
   $output .= '<table>';
   $output .= '<tr><th>' . t('Field Name') . '</th><th>' . t('Type and Size') . '</th><th>' . t('Default Value') . '</th><th>' . t('Serialized') . '</th><th>' . t('Translatable') . '</th><th>' . t('Description') . '</th></tr>';
-  foreach($variables['table_schema']['fields'] as $key => $value) {
+  foreach ($variables['table_schema']['fields'] as $key => $value) {
     $name = $key;
     if (isset($value['not NULL'])) {
       if ($value['not NULL']){
@@ -347,7 +348,7 @@ function theme_entityinfo_tableschema($variables) {
       }
     }
     if (isset($variables['table_schema']['unique keys'])) {
-      foreach($variables['table_schema']['unique keys'] as $kkey => $vvalue) {
+      foreach ($variables['table_schema']['unique keys'] as $kkey => $vvalue) {
         if ($key == $kkey) {
           $name = "& " . $name;
         }
@@ -390,9 +391,9 @@ function theme_entityinfo_tableschema($variables) {
     $output .= '<h6>' . t('Foreign Key') . '</h6>';
     $output .= '<table>';
     $output .= '<tr><th>' . t('Key Name') . '</th><th>' . t('Table') . '</th><th>' . t('Relationship') . '</th></tr>';
-    foreach($variables['table_schema']['foreign keys'] as $fkey => $fvalue) {
+    foreach ($variables['table_schema']['foreign keys'] as $fkey => $fvalue) {
       $ftable = $fvalue['table'];
-      foreach($fvalue['columns'] as $lkey => $rkey) {
+      foreach ($fvalue['columns'] as $lkey => $rkey) {
         $fcolumns = $lkey. ":" . $rkey;
       }
       $output .= '<tr><td>' . $fkey . '</td><td>' . $ftable . '</td><td>' . $fcolumns . '</td></tr>';
@@ -403,9 +404,9 @@ function theme_entityinfo_tableschema($variables) {
     $output .= '<h6>' . t('Indices') . '</h6>';
     $output .= '<table>';
     $output .= '<tr><th>' . t('Name') . '</th><th>' . t('Fields') . '</th></tr>';
-    foreach($variables['table_schema']['indexes'] as $ikey => $ivalue) {
+    foreach ($variables['table_schema']['indexes'] as $ikey => $ivalue) {
       $ival = NULL;
-      foreach($ivalue as $iikey => $iivalue) {
+      foreach ($ivalue as $iikey => $iivalue) {
         if (is_string($iivalue)) {
           $ival .= $iivalue . '/';
         } else {
@@ -437,8 +438,8 @@ function theme_entityinfo_bundle_fields($variables) {
       $output .= '<p>& - ' . t('unique key') . '</p>';
       $output .= '<p>* - ' . t('required field') .'</p>';
 
-  foreach($variables['fieldtables'] as $fieldname => $tableobject) {
-    foreach($tableobject as $tablename => $table) {
+  foreach ($variables['fieldtables'] as $fieldname => $tableobject) {
+    foreach ($tableobject as $tablename => $table) {
       $output .= '<fieldset class="collapsible collapsed">';
       $output .= '<legend><span class="fieldset-legend">' . $fieldname . ' (' . $tablename . ')' . '</span></legend><div class="fieldset-wrapper">';
 
@@ -446,10 +447,10 @@ function theme_entityinfo_bundle_fields($variables) {
       $output .= '<table>';
       $output .= '<tr><th>' . t('Field Name') . '</th><th>' . t('Type and Size') . '</th><th>' . t('Default Value') . '</th><th>' . t('Serialized') . '</th><th>' . t('Translatable') . '</th><th>' . t('Description') . '</th></tr>';
 
-      foreach($table['fields'] as $key => $value) {
+      foreach ($table['fields'] as $key => $value) {
         if (!in_array($key, array('entity_type', 'bundle', 'deleted', 'entity_id', 'revision_id', 'language', 'delta'))) {
           $name = $key;
-          if(isset($value['not NULL'])) {
+          if (isset($value['not NULL'])) {
             if ($value['not NULL']){
               $name .= " *";
             }
@@ -460,7 +461,7 @@ function theme_entityinfo_bundle_fields($variables) {
             }
           }
           if (isset($variables['fieldtables'][$fieldname][$tablename]['unique keys'])) {
-            foreach($variables['fieldtables'][$fieldname][$tablename]['unique keys'] as $kkey => $vvalue) {
+            foreach ($variables['fieldtables'][$fieldname][$tablename]['unique keys'] as $kkey => $vvalue) {
               if ($key == $kkey) {
                 $name = "& " . $name;
               }
@@ -504,9 +505,9 @@ function theme_entityinfo_bundle_fields($variables) {
         $output .= '<em>' . t('Foreign Key for') .' '.$tablename . '</em>';
         $output .= '<table>';
         $output .= '<tr><th>' . t('Key Name') . '</th><th>' . t('Table') . '</th><th>' . t('Relationship') . '</th></tr>';
-        foreach($variables['fieldtables'][$fieldname][$tablename]['foreign keys'] as $fkey => $fvalue) {
+        foreach ($variables['fieldtables'][$fieldname][$tablename]['foreign keys'] as $fkey => $fvalue) {
           $ftable = $fvalue['table'];
-          foreach($fvalue['columns'] as $lkey => $rkey) {
+          foreach ($fvalue['columns'] as $lkey => $rkey) {
             $fcolumns = $lkey. ":" . $rkey;
           }
           $output .= '<tr><td>' . $fkey . '</td><td>' . $ftable.'</td><td>' . $fcolumns . '</td></tr>';
@@ -543,7 +544,7 @@ function theme_entityinfo_controller_data($variables) {
   }
 
   $values_to_check = array('load hook', 'access callback', 'creation callback', 'save callback', 'deletion callback', 'revision deletion callback', 'view callback', 'form callback');
-  foreach($values_to_check as $value)
+  foreach ($values_to_check as $value)
   if (isset($variables[$value])) {
     $output .= '<tr><td>' . $value . '</td><td>' . $variables[$value] . '</td></tr>';
   }
