@@ -25,21 +25,21 @@ function entityinfo_theme($existing, $type, $theme, $path) {
 
   $themes['entityinfo_page'] = array(
     'variables' => array(
-      'infoobject' => null,
-      'entity' => null,
-      'database_info' => null,
+      'infoobject' => NULL,
+      'entity' => NULL,
+      'database_info' => NULL,
     ),
   );
   $themes['entityinfo_controller_data'] = array(
     'variables' => array(
-      'entity' => null,
+      'entity' => NULL,
     ),
   );
   $themes['entityinfo_bundles'] = array(
     'variables' => array(
-      'bundle' => null,
-      'entitytype' => null,
-      'fieldinfo' => null,
+      'bundle' => NULL,
+      'entitytype' => NULL,
+      'fieldinfo' => NULL,
     ),
   );
   $themes['entityinfo_database_info'] = array(
@@ -54,16 +54,16 @@ function entityinfo_theme($existing, $type, $theme, $path) {
   );
   $themes['entityinfo_fields'] = array(
     'variables' => array(
-      'fields' => null,
-      'bundles' => null,
-      'entity' => null,
+      'fields' => NULL,
+      'bundles' => NULL,
+      'entity' => NULL,
     ),
   );
   $themes['entityinfo_bundle_fields'] = array(
     'variables' => array(
-      'fields' => null,
-      'bundles' => null,
-      'entity' => null,
+      'fields' => NULL,
+      'bundles' => NULL,
+      'entity' => NULL,
     ),
   );
 
@@ -78,15 +78,15 @@ function entityinfo_theme($existing, $type, $theme, $path) {
   );
   $themes['entityinfo_master'] = array(
     'variables' => array(
-      'infoobject' => null,
-      'entityinfo_list' => null,
-      'pages' => null,
+      'infoobject' => NULL,
+      'entityinfo_list' => NULL,
+      'pages' => NULL,
     ),
   );
   $themes['entityinfo_tableschema'] = array(
     'variables' => array(
-      'table_type' => null,
-      'table_schema' => null,
+      'table_type' => NULL,
+      'table_schema' => NULL,
     ),
   );
   return $themes;
@@ -104,50 +104,51 @@ function entityinfo_page_admin() {
   $infoobject->fields = $fields = field_info_instances();
   $infoobject->tableschema = $tables = drupal_get_schema();
   $tablekeyindex = array();
-  foreach($tables as $index => $table) {
+
+  foreach ($tables as $index => $table) {
     $tableidx = array_keys($table);
     $tablekeyindex = array_unique(array_merge($tablekeyindex, $tableidx));
   }
   $entityinfo_list = array_keys($entities);
 
-  foreach($entities as $entitykey => $entity) {
+  foreach ($entities as $entitykey => $entity) {
     $title = $entity['label'];
-    if(isset($entity['plural label'])) {
-      $title .= " ".t("or")." " . $entity['plural label'];
+    if (isset($entity['plural label'])) {
+      $title .= " ". t("or") . " " . $entity['plural label'];
     }
     $title .= " (" . $entitykey . ")";
     $entities[$entitykey]['title'] = $title;
   }
 
-  $output = null;
+  $output = NULL;
 
-  $pageoutput = null;
-  foreach($entityinfo_list as $entity) {
+  $pageoutput = NULL;
+  foreach ($entityinfo_list as $entity) {
     //Database information for this entity
     $entityschema = array();
-    if(isset($infoobject->entities[$entity]['base table'])) {
-      $base_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['base table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['base table']] : null;
-      if($base_table_schema) {
+    if (isset($infoobject->entities[$entity]['base table'])) {
+      $base_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['base table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['base table']] : NULL;
+      if ($base_table_schema) {
         $entityschema['base_table_schema'] = $base_table_schema;
       }
     }
-    if(isset($infoobject->entities[$entity]['revision table'])) {
-      $revision_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['revision table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['revision table']] : null;
-      if($revision_table_schema) {
+    if (isset($infoobject->entities[$entity]['revision table'])) {
+      $revision_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['revision table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['revision table']] : NULL;
+      if ($revision_table_schema) {
         $entityschema['revision_table_schema'] = $revision_table_schema;
       }
     }
 
     $databaseinfo = theme('entityinfo_database_info', array(
-      'base_table' => isset($infoobject->entities[$entity]['base table']) ? $infoobject->entities[$entity]['base table'] : null,
-      'base_table_schema' => isset($infoobject->entities[$entity]['schema_fields_sql']['base table']) ? $infoobject->entities[$entity]['schema_fields_sql']['base table'] : null,
-      'revision_table' => isset($infoobject->entities[$entity]['revision table']) ? $infoobject->entities[$entity]['revision table'] : null,
-      'revision_table_schema' => isset($infoobject->entities[$entity]['schema_fields_sql']['revision table']) ? $infoobject->entities[$entity]['schema_fields_sql']['revision table'] : null,
+      'base_table' => isset($infoobject->entities[$entity]['base table']) ? $infoobject->entities[$entity]['base table'] : NULL,
+      'base_table_schema' => isset($infoobject->entities[$entity]['schema_fields_sql']['base table']) ? $infoobject->entities[$entity]['schema_fields_sql']['base table'] : NULL,
+      'revision_table' => isset($infoobject->entities[$entity]['revision table']) ? $infoobject->entities[$entity]['revision table'] : NULL,
+      'revision_table_schema' => isset($infoobject->entities[$entity]['schema_fields_sql']['revision table']) ? $infoobject->entities[$entity]['schema_fields_sql']['revision table'] : NULL,
       'entity_table_schema' => $entityschema,
       'entity' => $entity,
       'fieldable' => $infoobject->entities[$entity]['fieldable'],
     ));
-    $bundleinfo = theme('entityinfo_bundles', array('bundle' => $infoobject->bundles[$entity], 'entitytype' => $infoobject->entities[$entity]['label'], 'fields' => (isset($infoobject->fields[$entity]) ? $infoobject->fields[$entity] : null), 'entity' => $infoobject->entities[$entity], 'all_table_schema' => $infoobject->tableschema, 'parent_entity' => $entity));
+    $bundleinfo = theme('entityinfo_bundles', array('bundle' => $infoobject->bundles[$entity], 'entitytype' => $infoobject->entities[$entity]['label'], 'fields' => (isset($infoobject->fields[$entity]) ? $infoobject->fields[$entity] : NULL), 'entity' => $infoobject->entities[$entity], 'all_table_schema' => $infoobject->tableschema, 'parent_entity' => $entity));
     //gathering it all together fore each entity type
     $pageoutput .= theme('entityinfo_page', array('infoobject' => $infoobject, 'entity' => $entities[$entity], 'database_info' => $databaseinfo, 'bundle_info' => $bundleinfo));
   }
@@ -160,7 +161,7 @@ function entityinfo_page_admin() {
  * Theming function for overall page
  */
 function theme_entityinfo_master($variables) {
-  $output = null;
+  $output = NULL;
   $output .= '<h2>'.t('Entity Information').'</h2>';
   $output .= '<p>'.t('The data units listed below are defined as Drupal Entities by your Drupal installation. This list includes all activated core entities as well as any entities provided by contributed or custom modules that conform to the coding for a standard Drupal entity.').'</p>';
   $output .= $variables['pages'];
@@ -171,7 +172,7 @@ function theme_entityinfo_master($variables) {
  * Theming function for entity information
  */
 function theme_entityinfo_page($variables) {
-  $output = null;
+  $output = NULL;
   $output .= '<fieldset class="collapsible collapsed">';
   $output .= '<legend><span class="fieldset-legend">'.$variables['entity']['title'].'</span></legend><div class="fieldset-wrapper">';
   $output .= '<h3>'.$variables['entity']['title'].'</h3>';
@@ -190,7 +191,7 @@ function theme_entityinfo_page($variables) {
  * Theming function for base database information
  */
 function theme_entityinfo_database_info($variables) {
-  $output = null;
+  $output = NULL;
   $output .= '<h4>' . t('Database Structures Overview'). '</h4>';
   $output .= '<p>Listed below is information about the root tables for entity bundles  of the type '.$variables['entity'].'.</p>';
   if($variables['fieldable']) {
@@ -208,7 +209,7 @@ function theme_entityinfo_database_info($variables) {
   if(isset($variables['base_table'])) {
     $output .= '<tr><td>' .$variables['base_table'] . '</td>';
       $output .= '<td>';
-        $fields = null;
+        $fields = NULL;
         foreach($variables['base_table_schema'] as $element) {
           $fields .= $element . ', ';
         }
@@ -218,7 +219,7 @@ function theme_entityinfo_database_info($variables) {
       if(isset($variables['revision_table'])) {
         $output .= '<tr><td>' .$variables['revision_table'] . '</td>';
         $output .= '<td>';
-          $fields = null;
+          $fields = NULL;
           foreach($variables['revision_table_schema'] as $element) {
             $fields .= $element . ', ';
           }
@@ -244,7 +245,7 @@ function theme_entityinfo_database_info($variables) {
  */
 function theme_entityinfo_bundles($variables) {
 
-  $output = null;
+  $output = NULL;
   $revisionspossible = FALSE;
   if(isset($variables['entity']['revision table'])) $revisionspossible = TRUE;
   $output .= '<h4>' . t('Entity Bundles'). '</h4>';
@@ -274,7 +275,7 @@ function theme_entityinfo_bundles($variables) {
  */
 function theme_entityinfo_fields($variables) {
   $fieldtables = array();
-  $output = null;
+  $output = NULL;
   $output .= '<h5>'.t('Fields for'). ' ' . $variables['bundlelabel'] . '</h5>';
   $output .= '<table>';
   $output .= '<tr><th>' . t('Field Machine Name (used for EntityFieldQueries)') . '</th><th>'.t('Field Name') .'</th><th>'.t('Description (if provided)') .'</th><th>'.t('Drupal Field Type / Module') .'</th><th>'.t('Database Table Names') .'</th><th>'.t('Required Field') .'</th></tr>';
@@ -312,7 +313,7 @@ function theme_entityinfo_fields($variables) {
  * Theming function for entity tableschema info
  */
 function theme_entityinfo_tableschema($variables) {
-  $output = null;
+  $output = NULL;
 
   if($variables['table_type'] == 'base_table_schema') {
     $output .= '<fieldset class="collapsible collapsed">';
@@ -335,8 +336,8 @@ function theme_entityinfo_tableschema($variables) {
   $output .= '<tr><th>'.t('Field Name').'</th><th>'.t('Type and Size').'</th><th>'.t('Default Value').'</th><th>'.t('Serialized').'</th><th>'.t('Translatable').'</th><th>'.t('Description').'</th></tr>';
   foreach($variables['table_schema']['fields'] as $key => $value) {
     $name = $key;
-    if(isset($value['not null'])) {
-      if($value['not null']){
+    if(isset($value['not NULL'])) {
+      if($value['not NULL']){
         $name .= " *";
       }
     }
@@ -378,10 +379,10 @@ function theme_entityinfo_tableschema($variables) {
     } else {
       $type = $literaltype = "error";
     }
-    $defaultvalue = isset($value['default']) ? $value['default'] : null;
-    $serialize = isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : null;
-    $translatable = isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : null;
-    $description = isset($value['description']) ? $value['description'] : null;
+    $defaultvalue = isset($value['default']) ? $value['default'] : NULL;
+    $serialize = isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : NULL;
+    $translatable = isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : NULL;
+    $description = isset($value['description']) ? $value['description'] : NULL;
     $output .= '<tr><td>'.$name.'</td><td>'.$literaltype.'</td><td>'.$defaultvalue.'</td><td>'.$serialize.'</td><td>'.$translatable.'</td><td>'.$description.'</td></tr>';
   }
   $output .= '</table>';
@@ -403,7 +404,7 @@ function theme_entityinfo_tableschema($variables) {
     $output .= '<table>';
     $output .= '<tr><th>'.t('Name').'</th><th>'.t('Fields').'</th></tr>';
     foreach($variables['table_schema']['indexes'] as $ikey => $ivalue) {
-      $ival = null;
+      $ival = NULL;
       foreach($ivalue as $iikey => $iivalue) {
         if(is_string($iivalue)) {
           $ival .= $iivalue . '/';
@@ -427,7 +428,7 @@ function theme_entityinfo_tableschema($variables) {
  * Theming for bundle fields info
  */
 function theme_entityinfo_bundle_fields($variables) {
-  $output = null;
+  $output = NULL;
   $output .= '<fieldset class="collapsible collapsed">';
   $output .= '<legend><span class="fieldset-legend">'.t('Attached Fields').'</span></legend><div class="fieldset-wrapper">';
 
@@ -448,8 +449,8 @@ function theme_entityinfo_bundle_fields($variables) {
       foreach($table['fields'] as $key => $value) {
         if(!in_array($key, array('entity_type', 'bundle', 'deleted', 'entity_id', 'revision_id', 'language', 'delta'))) {
           $name = $key;
-          if(isset($value['not null'])) {
-            if($value['not null']){
+          if(isset($value['not NULL'])) {
+            if($value['not NULL']){
               $name .= " *";
             }
           }
@@ -491,10 +492,10 @@ function theme_entityinfo_bundle_fields($variables) {
           } else {
             $type = $literaltype = "error";
           }
-          $defaultvalue = isset($value['default']) ? $value['default'] : null;
-          $serialize = isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : null;
-          $translatable = isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : null;
-          $description = isset($value['description']) ? $value['description'] : null;
+          $defaultvalue = isset($value['default']) ? $value['default'] : NULL;
+          $serialize = isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : NULL;
+          $translatable = isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : NULL;
+          $description = isset($value['description']) ? $value['description'] : NULL;
           $output .= '<tr><td>'.$name.'</td><td>'.$literaltype.'</td><td>'.$defaultvalue.'</td><td>'.$serialize.'</td><td>'.$translatable.'</td><td>'.$description.'</td></tr>';
         }
       }
@@ -523,7 +524,7 @@ function theme_entityinfo_bundle_fields($variables) {
  * Theming for controller data
  */
 function theme_entityinfo_controller_data($variables) {
-  $output = null;
+  $output = NULL;
   $output .= '<h4>'.t('Controller Information').'</h4>';
   $output .= '<table>';
   $output .= '<tr><th>'.t('Code Structure').'</th><th>'.t('Item').'</th></tr>';
