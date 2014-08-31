@@ -121,8 +121,6 @@ function entityinfo_page_admin() {
     $entities[$entitykey]['title'] = $title;
   }
 
-  $output = NULL;
-
   $pageoutput = NULL;
 
   foreach ($entityinfo_list as $entity) {
@@ -130,10 +128,10 @@ function entityinfo_page_admin() {
     $entityschema = _entityinfo_get_entity_table_info($infoobject, $entity);
 
     $databaseinfo = theme('entityinfo_database_info', array(
-      'base_table' => isset($infoobject->entities[$entity]['base table']) ? $infoobject->entities[$entity]['base table'] : NULL,
-      'base_table_schema' => isset($infoobject->entities[$entity]['schema_fields_sql']['base table']) ? $infoobject->entities[$entity]['schema_fields_sql']['base table'] : NULL,
-      'revision_table' => isset($infoobject->entities[$entity]['revision table']) ? $infoobject->entities[$entity]['revision table'] : NULL,
-      'revision_table_schema' => isset($infoobject->entities[$entity]['schema_fields_sql']['revision table']) ? $infoobject->entities[$entity]['schema_fields_sql']['revision table'] : NULL,
+      'base_table' => _entityinfo_get_base_table($infoobject),
+      'base_table_schema' => _entityinfo_get_base_table_schema($infoobject),
+      'revision_table' => _entityinfo_get_revision_table($infoobject),
+      'revision_table_schema' => _entityinfo_get_revision_table_schema($infoobject),
       'entity_table_schema' => $entityschema,
       'entity' => $entity,
       'fieldable' => $infoobject->entities[$entity]['fieldable'],
@@ -143,8 +141,7 @@ function entityinfo_page_admin() {
     $pageoutput .= theme('entityinfo_page', array('infoobject' => $infoobject, 'entity' => $entities[$entity], 'database_info' => $databaseinfo, 'bundle_info' => $bundleinfo));
   }
   //and outputting it on one page.
-  $output .= theme('entityinfo_master', array('infoobject' => $infoobject, 'entityinfo_list' => $entityinfo_list, 'pages' => $pageoutput));
-  return $output;
+  return theme('entityinfo_master', array('infoobject' => $infoobject, 'entityinfo_list' => $entityinfo_list, 'pages' => $pageoutput));
 }
 
 /**
@@ -625,4 +622,20 @@ function _entityinfo_get_entity_table_info($infoobject, $entity) {
     }
   }
   return $entityschema;
+}
+
+function _entityinfo_get_base_table($infoobject) {
+  return isset($infoobject->entities[$entity]['base table']) ? $infoobject->entities[$entity]['base table'] : NULL;
+}
+
+function _entityinfo_get_base_table_schema($infoobject) {
+  return isset($infoobject->entities[$entity]['schema_fields_sql']['base table']) ? $infoobject->entities[$entity]['schema_fields_sql']['base table'] : NULL;
+}
+
+function _entityinfo_get_revision_table($infoobject) {
+  return isset($infoobject->entities[$entity]['revision table']) ? $infoobject->entities[$entity]['revision table'] : NULL;
+}
+
+function _entityinfo_get_revision_table($infoobject) {
+  return isset($infoobject->entities[$entity]['schema_fields_sql']['revision table']) ? $infoobject->entities[$entity]['schema_fields_sql']['revision table'] : NULL;
 }
