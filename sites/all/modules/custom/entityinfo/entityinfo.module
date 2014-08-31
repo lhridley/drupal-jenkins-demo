@@ -1,10 +1,11 @@
 <?php
 /**
- * @file EntityInfo module file
+ * @file
+ * EntityInfo module file
  */
 
 /**
- * Implements hook_menu()
+ * Implements hook_menu().
  */
 function entityinfo_menu() {
   $items['admin/config/development/entity_type_info'] = array(
@@ -18,7 +19,7 @@ function entityinfo_menu() {
 }
 
 /**
- * Implements hook_theme()
+ * Implements hook_theme().
  */
 function entityinfo_theme($existing, $type, $theme, $path) {
   $themes = array();
@@ -264,7 +265,7 @@ function theme_entityinfo_bundles($variables) {
       }
     }
     if (count($variables['fields'][$key]) != 0) {
-      $output .= theme('entityinfo_fields', array('fields' => $variables['fields'][$key], /*'bundle' => $variables['bundle'][$key],*/ /*'entity' => $variables['entity'],*/ 'parent_entity' => $variables['parent_entity'], 'revisionsflag' => $revisionspossible, 'parentbundle' => $key, 'bundlelabel' => $variables['bundle'][$key]['label'], 'all_table_schema' => $variables['all_table_schema']));
+      $output .= theme('entityinfo_fields', array('fields' => $variables['fields'][$key], /* 'bundle' => $variables['bundle'][$key], */ /* 'entity' => $variables['entity'], */ 'parent_entity' => $variables['parent_entity'], 'revisionsflag' => $revisionspossible, 'parentbundle' => $key, 'bundlelabel' => $variables['bundle'][$key]['label'], 'all_table_schema' => $variables['all_table_schema']));
     }
     $output .= '</div></fieldset>';
   }
@@ -372,7 +373,7 @@ function theme_entityinfo_tableschema($variables) {
           }
         }
       }
-      if (in_array($type, array('char', 'varchar', 'text'))){
+      if (in_array($type, array('char', 'varchar', 'text'))) {
         if (isset($value['length'])) {
           $literaltype .= '(' . $value['length'] . ')';
         }
@@ -508,7 +509,7 @@ function theme_entityinfo_bundle_fields($variables) {
       }
       $output .= '</table>';
       if (isset($variables['fieldtables'][$fieldname][$tablename]['foreign keys'])) {
-        $output .= '<em>' . t('Foreign Key for') .' ' . $tablename . '</em>';
+        $output .= '<em>' . t('Foreign Key for') . ' ' . $tablename . '</em>';
         $output .= '<table>';
         $output .= '<tr><th>' . t('Key Name') . '</th><th>' . t('Table') . '</th><th>' . t('Relationship') . '</th></tr>';
         foreach ($variables['fieldtables'][$fieldname][$tablename]['foreign keys'] as $fkey => $fvalue) {
