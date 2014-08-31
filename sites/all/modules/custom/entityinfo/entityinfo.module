@@ -318,19 +318,7 @@ function theme_entityinfo_fields($variables) {
  */
 function theme_entityinfo_tableschema($variables) {
   $output = NULL;
-
-  if ($variables['table_type'] == 'base_table_schema') {
-    $output .= '<fieldset class="collapsible collapsed">';
-    $output .= '<legend><span class="fieldset-legend">' . t('Base Table Schema') . ": " . $variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
-
-    $output .= '<h5>' . t('Base Table Schema') . ": " . $variables['table_schema']['name'] . '</h5>';
-  }
-  elseif ($variables['table_type'] == 'revision_table_schema') {
-    $output .= '<fieldset class="collapsible collapsed">';
-    $output .= '<legend><span class="fieldset-legend">' . t('Revision Table Schema') . ": " . $variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
-
-    $output .= '<h5>' . t('Revision Table Schema') . ": " . $variables['table_schema']['name'] . '</h5>';
-  }
+  $output .= _entityinfo_get_table_type($variables);
   if (isset($variables['table_schema']['module'])) {
     $output .='<em>' . t('Defined by the module') . ' -- ' . $variables['table_schema']['module'] . '</em>';
   }
@@ -342,39 +330,8 @@ function theme_entityinfo_tableschema($variables) {
     $output .= _entityinfo_get_field_info($name, $variables['table_schema'], $key, $value);
   }
   $output .= '</table>';
-  if (isset($variables['table_schema']['foreign keys'])) {
-    $output .= '<h6>' . t('Foreign Key') . '</h6>';
-    $output .= '<table>';
-    $output .= '<tr><th>' . t('Key Name') . '</th><th>' . t('Table') . '</th><th>' . t('Relationship') . '</th></tr>';
-    foreach ($variables['table_schema']['foreign keys'] as $fkey => $fvalue) {
-      $ftable = $fvalue['table'];
-      foreach ($fvalue['columns'] as $lkey => $rkey) {
-        $fcolumns = $lkey . ":" . $rkey;
-      }
-      $output .= '<tr><td>' . $fkey . '</td><td>' . $ftable . '</td><td>' . $fcolumns . '</td></tr>';
-    }
-    $output .= '</table>';
-  }
-  if (isset($variables['table_schema']['indexes'])) {
-    $output .= '<h6>' . t('Indices') . '</h6>';
-    $output .= '<table>';
-    $output .= '<tr><th>' . t('Name') . '</th><th>' . t('Fields') . '</th></tr>';
-    foreach ($variables['table_schema']['indexes'] as $ikey => $ivalue) {
-      $ival = NULL;
-      foreach ($ivalue as $iikey => $iivalue) {
-        if (is_string($iivalue)) {
-          $ival .= $iivalue . '/';
-        }
-        else {
-          if (is_array($iivalue)) {
-            $ival .= $iivalue[0] . '/';
-          }
-        }
-      }
-      $ival = drupal_substr($ival, 0, drupal_strlen($ival) - 1);
-      $output .= '<tr><td>' . $ikey . '</td><td>' . $ival . '</td></tr>';
-    }
-  }
+  $output .= _entityinfo_get_foreign_keys($variables);
+  $output .= _entityinfo_get_table_indexes($variables);
   $output .= '</table>';
   $output .= '</div></fieldset>';
 
@@ -596,4 +553,70 @@ function _entityinfo_get_translatable($value) {
  */
 function _entityinfo_get_description($value) {
   return isset($value['description']) ? $value['description'] : NULL;
+}
+
+/**
+ * Returns the table type information, formatted for output.
+ */
+function _entityinfo_get_table_type($variables) {
+  $output = NULL;
+  if ($variables['table_type'] == 'base_table_schema') {
+    $output .= '<fieldset class="collapsible collapsed">';
+    $output .= '<legend><span class="fieldset-legend">' . t('Base Table Schema') . ": " . $variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
+
+    $output .= '<h5>' . t('Base Table Schema') . ": " . $variables['table_schema']['name'] . '</h5>';
+  }
+  elseif ($variables['table_type'] == 'revision_table_schema') {
+    $output .= '<fieldset class="collapsible collapsed">';
+    $output .= '<legend><span class="fieldset-legend">' . t('Revision Table Schema') . ": " . $variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
+
+    $output .= '<h5>' . t('Revision Table Schema') . ": " . $variables['table_schema']['name'] . '</h5>';
+  }
+  return $output;
+}
+
+/**
+ * Returns the foreign key information, formatted for output.
+ */
+function _entityinfo_get_foreign_keys($variables) {
+  $output = NULL;
+   if (isset($variables['table_schema']['foreign keys'])) {
+    $output .= '<h6>' . t('Foreign Key') . '</h6>';
+    $output .= '<table>';
+    $output .= '<tr><th>' . t('Key Name') . '</th><th>' . t('Table') . '</th><th>' . t('Relationship') . '</th></tr>';
+    foreach ($variables['table_schema']['foreign keys'] as $fkey => $fvalue) {
+      $ftable = $fvalue['table'];
+      foreach ($fvalue['columns'] as $lkey => $rkey) {
+        $fcolumns = $lkey . ":" . $rkey;
+      }
+      $output .= '<tr><td>' . $fkey . '</td><td>' . $ftable . '</td><td>' . $fcolumns . '</td></tr>';
+    }
+    $output .= '</table>';
+  }
+  return $output;
+}
+
+function _entityinfo_get_table_indexes($variables) {
+  $output = NULL;
+  if (isset($variables['table_schema']['indexes'])) {
+    $output .= '<h6>' . t('Indices') . '</h6>';
+    $output .= '<table>';
+    $output .= '<tr><th>' . t('Name') . '</th><th>' . t('Fields') . '</th></tr>';
+    foreach ($variables['table_schema']['indexes'] as $ikey => $ivalue) {
+      $ival = NULL;
+      foreach ($ivalue as $iikey => $iivalue) {
+        if (is_string($iivalue)) {
+          $ival .= $iivalue . '/';
+        }
+        else {
+          if (is_array($iivalue)) {
+            $ival .= $iivalue[0] . '/';
+          }
+        }
+      }
+      $ival = drupal_substr($ival, 0, drupal_strlen($ival) - 1);
+      $output .= '<tr><td>' . $ikey . '</td><td>' . $ival . '</td></tr>';
+    }
+  }
+  return $output;
 }
