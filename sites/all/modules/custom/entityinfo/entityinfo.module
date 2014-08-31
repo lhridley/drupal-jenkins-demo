@@ -465,7 +465,7 @@ function theme_entityinfo_controller_data($variables) {
  */
 
 function _entityinfo_get_field_keys() {
-  $output = null;
+  $output = NULL;
   $output .= '<p>+ - ' . t('primary key') . '</p>';
   $output .= '<p>& - ' . t('unique key') . '</p>';
   $output .= '<p>* - ' . t('required field') . '</p>';
@@ -477,24 +477,7 @@ function _entityinfo_get_field_keys() {
  */
 function _entityinfo_get_field_info($name, $schema, $key, $value) {
   $output = NULL;
-
-  if (isset($value['not null'])) {
-    if ($value['not null']) {
-      $name .= " *";
-    }
-  }
-  if (isset($schema['primary key'])) {
-    if ($schema['primary key'][0] == $key) {
-      $name = "+ " . $name;
-    }
-  }
-  if (isset($schema['unique keys'])) {
-    foreach ($schema['unique keys'] as $kkey => $vvalue) {
-      if ($key == $kkey) {
-        $name = "& " . $name;
-      }
-    }
-  }
+  $name .= _entityinfo_set_name_keys($name, $value);
   if (isset($value['type'])) {
     $type = $value['type'];
     $literaltype = $value['type'];
@@ -530,3 +513,26 @@ function _entityinfo_get_field_info($name, $schema, $key, $value) {
   return $output;
 }
 
+/**
+ * Returns the $name variable with key indicators set on string for output purposes
+ */
+function _entityinfo_set_name_keys($name, $value) {
+    if (isset($value['not null'])) {
+    if ($value['not null']) {
+      $name .= " *";
+    }
+  }
+  if (isset($schema['primary key'])) {
+    if ($schema['primary key'][0] == $key) {
+      $name = "+ " . $name;
+    }
+  }
+  if (isset($schema['unique keys'])) {
+    foreach ($schema['unique keys'] as $kkey => $vvalue) {
+      if ($key == $kkey) {
+        $name = "& " . $name;
+      }
+    }
+  }
+  return $name;
+}
