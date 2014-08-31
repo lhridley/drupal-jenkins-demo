@@ -205,7 +205,7 @@ function theme_entityinfo_database_info($variables) {
     $output .= '</p>';
   }
   $output .= '<table>';
-  $output .= '<tr><th>' . t('Database table') . '</th><th>' . t('Database fields') .'</th></tr>';
+  $output .= '<tr><th>' . t('Database table') . '</th><th>' . t('Database fields') . '</th></tr>';
 
   if (isset($variables['base_table'])) {
     $output .= '<tr><td>' . $variables['base_table'] . '</td>';
@@ -214,7 +214,7 @@ function theme_entityinfo_database_info($variables) {
         foreach ($variables['base_table_schema'] as $element) {
           $fields .= $element . ', ';
         }
-        $fields = substr($fields, 0, strlen($fields) - 2);
+        $fields = drupal_substr($fields, 0, strlen($fields) - 2);
       $output .= $fields;
       $output .= '</td></tr>';
       if (isset($variables['revision_table'])) {
@@ -228,8 +228,9 @@ function theme_entityinfo_database_info($variables) {
         $output .= $fields;
         $output .= '</td></tr>';
       }
-  } else {
-    $output .= '<tr><td colspan="2"><em>'. t('This entity is not stored in your Drupal database table.  Perhaps it\'s from an externally stored source?') . '</em></td></tr>';
+  }
+  else {
+    $output .= '<tr><td colspan="2"><em>' . t('This entity is not stored in your Drupal database table.  Perhaps it\'s from an externally stored source?') . '</em></td></tr>';
   }
   $output .= '</table>';
   if (count($variables['entity_table_schema']) > 0) {
@@ -279,7 +280,7 @@ function theme_entityinfo_fields($variables) {
   $output = NULL;
   $output .= '<h5>' . t('Fields for') . ' ' . $variables['bundlelabel'] . '</h5>';
   $output .= '<table>';
-  $output .= '<tr><th>' . t('Field Machine Name (used for EntityFieldQueries)') . '</th><th>' . t('Field Name') . '</th><th>' . t('Description (if provided)') . '</th><th>' . t('Drupal Field Type / Module') . '</th><th>' . t('Database Table Names') .'</th><th>' . t('Required Field') . '</th></tr>';
+  $output .= '<tr><th>' . t('Field Machine Name (used for EntityFieldQueries)') . '</th><th>' . t('Field Name') . '</th><th>' . t('Description (if provided)') . '</th><th>' . t('Drupal Field Type / Module') . '</th><th>' . t('Database Table Names') . '</th><th>' . t('Required Field') . '</th></tr>';
   foreach ($variables['fields'] as $key => $field) {
     $fieldstopass = array();
     $output .= '<tr>';
@@ -297,8 +298,9 @@ function theme_entityinfo_fields($variables) {
     $output .= '</td>';
     $output .= '<td>';
       if ($field['required']) {
-        $output.= "TRUE";
-      } else {
+        $output .= "TRUE";
+      }
+      else {
         $output .= "FALSE";
       }
     $output .= '</td>';
@@ -321,7 +323,8 @@ function theme_entityinfo_tableschema($variables) {
     $output .= '<legend><span class="fieldset-legend">' . t('Base Table Schema') . ": ".$variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
 
     $output .= '<h5>' . t('Base Table Schema') . ": " . $variables['table_schema']['name'] . '</h5>';
-  } elseif ($variables['table_type'] == 'revision_table_schema') {
+  }
+  elseif ($variables['table_type'] == 'revision_table_schema') {
     $output .= '<fieldset class="collapsible collapsed">';
     $output .= '<legend><span class="fieldset-legend">' . t('Revision Table Schema') . ": ".$variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
 
@@ -377,7 +380,8 @@ function theme_entityinfo_tableschema($variables) {
       if (in_array($type, array('numeric'))) {
         $literaltype .= '(' . $value['precision'] . ":" . $value['scale'] . ')';
       }
-    } else {
+    }
+    else {
       $type = $literaltype = "error";
     }
     $defaultvalue = isset($value['default']) ? $value['default'] : NULL;
@@ -409,7 +413,8 @@ function theme_entityinfo_tableschema($variables) {
       foreach ($ivalue as $iikey => $iivalue) {
         if (is_string($iivalue)) {
           $ival .= $iivalue . '/';
-        } else {
+        }
+        else {
           if (is_array($iivalue)) {
             $ival .= $iivalue[0] . '/';
           }
@@ -490,7 +495,8 @@ function theme_entityinfo_bundle_fields($variables) {
             if (in_array($type, array('numeric'))) {
               $literaltype .= '(' . $value['precision'] . ":" . $value['scale'] . ')';
             }
-          } else {
+          }
+          else {
             $type = $literaltype = "error";
           }
           $defaultvalue = isset($value['default']) ? $value['default'] : NULL;
@@ -537,7 +543,8 @@ function theme_entityinfo_controller_data($variables) {
   if (isset($variables['fieldable'])) {
     if ($variables['fieldable']) {
       $value = t("TRUE");
-    } else {
+    }
+    else {
       $value = t("FALSE");
     }
     $output .= '<tr><td>' . t('fieldable') . '</td><td>' . $value  . '</td></tr>';
