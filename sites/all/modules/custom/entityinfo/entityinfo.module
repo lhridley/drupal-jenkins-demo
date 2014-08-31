@@ -478,33 +478,7 @@ function _entityinfo_get_field_keys() {
 function _entityinfo_get_field_info($name, $schema, $key, $value) {
   $output = NULL;
   $name .= _entityinfo_set_name_keys($name, $value);
-  if (isset($value['type'])) {
-    $type = $value['type'];
-    $literaltype = $value['type'];
-    if (isset($value['size'])) {
-      if (!in_array($value['size'], array('normal'))) {
-        $literaltype .= "/" . $value['size'];
-      }
-    }
-    if (in_array($type, array('int', 'float', 'numeric'))) {
-      if (isset($value['unsigned'])) {
-        if ($value['unsigned']) {
-          $literaltype .= '(unsigned)';
-        }
-      }
-    }
-    if (in_array($type, array('char', 'varchar', 'text'))) {
-      if (isset($value['length'])) {
-        $literaltype .= '(' . $value['length'] . ')';
-      }
-    }
-    if (in_array($type, array('numeric'))) {
-      $literaltype .= '(' . $value['precision'] . ":" . $value['scale'] . ')';
-    }
-  }
-  else {
-    $type = $literaltype = "error";
-  }
+  $literaltype = _entityinfo_get_literal_type($value);
   $defaultvalue = isset($value['default']) ? $value['default'] : NULL;
   $serialize = isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : NULL;
   $translatable = isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : NULL;
@@ -535,4 +509,38 @@ function _entityinfo_set_name_keys($name, $value) {
     }
   }
   return $name;
+}
+
+/**
+ * Returns the $literaltype formatted as a string for output
+ */
+function _entityinfo_get_literal_type($value) {
+    if (isset($value['type'])) {
+    $type = $value['type'];
+    $literaltype = $value['type'];
+    if (isset($value['size'])) {
+      if (!in_array($value['size'], array('normal'))) {
+        $literaltype .= "/" . $value['size'];
+      }
+    }
+    if (in_array($type, array('int', 'float', 'numeric'))) {
+      if (isset($value['unsigned'])) {
+        if ($value['unsigned']) {
+          $literaltype .= '(unsigned)';
+        }
+      }
+    }
+    if (in_array($type, array('char', 'varchar', 'text'))) {
+      if (isset($value['length'])) {
+        $literaltype .= '(' . $value['length'] . ')';
+      }
+    }
+    if (in_array($type, array('numeric'))) {
+      $literaltype .= '(' . $value['precision'] . ":" . $value['scale'] . ')';
+    }
+  }
+  else {
+    $type = $literaltype = "error";
+  }
+  return $literaltype;
 }
