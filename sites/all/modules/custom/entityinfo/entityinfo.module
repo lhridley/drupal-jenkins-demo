@@ -567,7 +567,7 @@ function _entityinfo_get_string_length($type, $value) {
       $output = '(' . $value['length'] . ')';
     }
   }
-  $return $output;
+  return $output;
 }
 
 /**
