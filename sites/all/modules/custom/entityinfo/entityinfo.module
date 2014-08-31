@@ -479,10 +479,10 @@ function _entityinfo_get_field_info($name, $schema, $key, $value) {
   $output = NULL;
   $name .= _entityinfo_set_name_keys($name, $value);
   $literaltype = _entityinfo_get_literal_type($value);
-  $defaultvalue = isset($value['default']) ? $value['default'] : NULL;
-  $serialize = isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : NULL;
-  $translatable = isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : NULL;
-  $description = isset($value['description']) ? $value['description'] : NULL;
+  $defaultvalue = _entityinfo_get_defaultvalue($value);
+  $serialize = _entityinfo_get_serialize($value);
+  $translatable = _entityinfo_get_translatable($value);
+  $description = _entityinfo_get_description($value);
   $output .= '<tr><td>' . $name . '</td><td>' . $literaltype . '</td><td>' . $defaultvalue . '</td><td>' . $serialize . '</td><td>' . $translatable . '</td><td>' . $description . '</td></tr>';
   return $output;
 }
@@ -491,7 +491,7 @@ function _entityinfo_get_field_info($name, $schema, $key, $value) {
  * Returns the $name variable with key indicators set on string for output purposes
  */
 function _entityinfo_set_name_keys($name, $value) {
-    if (isset($value['not null'])) {
+  if (isset($value['not null'])) {
     if ($value['not null']) {
       $name .= " *";
     }
@@ -515,9 +515,8 @@ function _entityinfo_set_name_keys($name, $value) {
  * Returns the $literaltype formatted as a string for output
  */
 function _entityinfo_get_literal_type($value) {
-    if (isset($value['type'])) {
-    $type = $value['type'];
-    $literaltype = $value['type'];
+  if (isset($value['type'])) {
+    $type = $literaltype = $value['type'];
     $literaltype .= _entityinfo_get_size($value);
     $literaltype .= _entityinfo_number_info($type, $value);
     $literaltype .= _entityinfo_get_string_length($type, $value);
@@ -569,4 +568,32 @@ function _entityinfo_get_string_length($type, $value) {
     }
   }
   $return $output;
+}
+
+/**
+ * Returns the $defaultvalue formatted as a string for output
+ */
+function _entityinfo_get_defaultvalue($value) {
+  return isset($value['default']) ? $value['default'] : NULL;
+}
+
+/**
+ * Returns $serialize formatted as a string for output
+ */
+function _entityinfo_get_serialize($value) {
+  return isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : NULL;
+}
+
+/**
+ * Returns $translatable formatted as a string for output
+ */
+function _entityinfo_get_translatable($value) {
+  isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : NULL;
+}
+
+/**
+ * Returns $description formatted as a string for output
+ */
+function _entityinfo_get_description($value) {
+  return isset($value['description']) ? $value['description'] : NULL;
 }
