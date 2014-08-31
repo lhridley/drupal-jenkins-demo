@@ -214,17 +214,17 @@ function theme_entityinfo_database_info($variables) {
         foreach ($variables['base_table_schema'] as $element) {
           $fields .= $element . ', ';
         }
-        $fields = drupal_substr($fields, 0, strlen($fields) - 2);
+        $fields = drupal_substr($fields, 0, drupal_strlen($fields) - 2);
       $output .= $fields;
       $output .= '</td></tr>';
       if (isset($variables['revision_table'])) {
-        $output .= '<tr><td>' .$variables['revision_table'] . '</td>';
+        $output .= '<tr><td>' . $variables['revision_table'] . '</td>';
         $output .= '<td>';
           $fields = NULL;
           foreach ($variables['revision_table_schema'] as $element) {
             $fields .= $element . ', ';
           }
-          $fields = substr($fields, 0, strlen($fields) - 2);
+          $fields = drupal_substr($fields, 0, drupal_strlen($fields) - 2);
         $output .= $fields;
         $output .= '</td></tr>';
       }
@@ -260,7 +260,7 @@ function theme_entityinfo_bundles($variables) {
     $output .= '<p>' . t('Machine name') . ": " . $key . '</p>';
     if (isset($value['admin'])) {
       if (isset($value['admin']['real path'])) {
-        $output .= '<p>'.t('Path for administrative pages to manage this entity\'s structure') . ": " . l($value['admin']['real path'], $value['admin']['real path']) . '</p>';
+        $output .= '<p>' . t('Path for administrative pages to manage this entity\'s structure') . ": " . l($value['admin']['real path'], $value['admin']['real path']) . '</p>';
       }
     }
     if (count($variables['fields'][$key]) != 0) {
@@ -285,7 +285,7 @@ function theme_entityinfo_fields($variables) {
     $fieldstopass = array();
     $output .= '<tr>';
     $output .= '<td>' . $key . '</td><td>' . $field['label'] . '</td>';
-    $output .= '<td>' . (strlen($field['description']) > 0 ? $field['description'] : "N/A") . '</td>';
+    $output .= '<td>' . (drupal_strlen($field['description']) > 0 ? $field['description'] : "N/A") . '</td>';
     $output .= '<td>' . $field['widget']['type'] . '/' . $field['widget']['module'] . '</td>';
     $basefieldname = 'field_data_' . $field['field_name'];
     $output .= '<td>' . $basefieldname;
@@ -320,13 +320,13 @@ function theme_entityinfo_tableschema($variables) {
 
   if ($variables['table_type'] == 'base_table_schema') {
     $output .= '<fieldset class="collapsible collapsed">';
-    $output .= '<legend><span class="fieldset-legend">' . t('Base Table Schema') . ": ".$variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
+    $output .= '<legend><span class="fieldset-legend">' . t('Base Table Schema') . ": " . $variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
 
     $output .= '<h5>' . t('Base Table Schema') . ": " . $variables['table_schema']['name'] . '</h5>';
   }
   elseif ($variables['table_type'] == 'revision_table_schema') {
     $output .= '<fieldset class="collapsible collapsed">';
-    $output .= '<legend><span class="fieldset-legend">' . t('Revision Table Schema') . ": ".$variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
+    $output .= '<legend><span class="fieldset-legend">' . t('Revision Table Schema') . ": " . $variables['table_schema']['name'] . '</span></legend><div class="fieldset-wrapper">';
 
     $output .= '<h5>' . t('Revision Table Schema') . ": " . $variables['table_schema']['name'] . '</h5>';
   }
@@ -340,8 +340,8 @@ function theme_entityinfo_tableschema($variables) {
   $output .= '<tr><th>' . t('Field Name') . '</th><th>' . t('Type and Size') . '</th><th>' . t('Default Value') . '</th><th>' . t('Serialized') . '</th><th>' . t('Translatable') . '</th><th>' . t('Description') . '</th></tr>';
   foreach ($variables['table_schema']['fields'] as $key => $value) {
     $name = $key;
-    if (isset($value['not NULL'])) {
-      if ($value['not NULL']){
+    if (isset($value['not null'])) {
+      if ($value['not null']) {
         $name .= " *";
       }
     }
@@ -398,7 +398,7 @@ function theme_entityinfo_tableschema($variables) {
     foreach ($variables['table_schema']['foreign keys'] as $fkey => $fvalue) {
       $ftable = $fvalue['table'];
       foreach ($fvalue['columns'] as $lkey => $rkey) {
-        $fcolumns = $lkey. ":" . $rkey;
+        $fcolumns = $lkey . ":" . $rkey;
       }
       $output .= '<tr><td>' . $fkey . '</td><td>' . $ftable . '</td><td>' . $fcolumns . '</td></tr>';
     }
@@ -420,7 +420,7 @@ function theme_entityinfo_tableschema($variables) {
           }
         }
       }
-      $ival = substr($ival, 0, strlen($ival) - 1);
+      $ival = drupal_substr($ival, 0, drupal_strlen($ival) - 1);
       $output .= '<tr><td>' . $ikey . '</td><td>' . $ival . '</td></tr>';
     }
   }
@@ -441,7 +441,7 @@ function theme_entityinfo_bundle_fields($variables) {
   $output .= '<h6>' . t('Attached Fields') . '</h6>';
       $output .= '<p>+ - ' . t('primary key') . '</p>';
       $output .= '<p>& - ' . t('unique key') . '</p>';
-      $output .= '<p>* - ' . t('required field') .'</p>';
+      $output .= '<p>* - ' . t('required field') . '</p>';
 
   foreach ($variables['fieldtables'] as $fieldname => $tableobject) {
     foreach ($tableobject as $tablename => $table) {
@@ -455,8 +455,8 @@ function theme_entityinfo_bundle_fields($variables) {
       foreach ($table['fields'] as $key => $value) {
         if (!in_array($key, array('entity_type', 'bundle', 'deleted', 'entity_id', 'revision_id', 'language', 'delta'))) {
           $name = $key;
-          if (isset($value['not NULL'])) {
-            if ($value['not NULL']){
+          if (isset($value['not null'])) {
+            if ($value['not null']) {
               $name .= " *";
             }
           }
@@ -487,7 +487,7 @@ function theme_entityinfo_bundle_fields($variables) {
                 }
               }
             }
-            if (in_array($type, array('char', 'varchar', 'text'))){
+            if (in_array($type, array('char', 'varchar', 'text'))) {
               if (isset($value['length'])) {
                 $literaltype .= '(' . $value['length'] . ')';
               }
@@ -508,15 +508,15 @@ function theme_entityinfo_bundle_fields($variables) {
       }
       $output .= '</table>';
       if (isset($variables['fieldtables'][$fieldname][$tablename]['foreign keys'])) {
-        $output .= '<em>' . t('Foreign Key for') .' '.$tablename . '</em>';
+        $output .= '<em>' . t('Foreign Key for') .' ' . $tablename . '</em>';
         $output .= '<table>';
         $output .= '<tr><th>' . t('Key Name') . '</th><th>' . t('Table') . '</th><th>' . t('Relationship') . '</th></tr>';
         foreach ($variables['fieldtables'][$fieldname][$tablename]['foreign keys'] as $fkey => $fvalue) {
           $ftable = $fvalue['table'];
           foreach ($fvalue['columns'] as $lkey => $rkey) {
-            $fcolumns = $lkey. ":" . $rkey;
+            $fcolumns = $lkey . ":" . $rkey;
           }
-          $output .= '<tr><td>' . $fkey . '</td><td>' . $ftable.'</td><td>' . $fcolumns . '</td></tr>';
+          $output .= '<tr><td>' . $fkey . '</td><td>' . $ftable . '</td><td>' . $fcolumns . '</td></tr>';
         }
         $output .= '</table>';
       }
@@ -532,7 +532,7 @@ function theme_entityinfo_bundle_fields($variables) {
  */
 function theme_entityinfo_controller_data($variables) {
   $output = NULL;
-  $output .= '<h4>'. t('Controller Information') . '</h4>';
+  $output .= '<h4>' . t('Controller Information') . '</h4>';
   $output .= '<table>';
   $output .= '<tr><th>' . t('Code Structure') . '</th><th>' . t('Item') . '</th></tr>';
 
@@ -547,7 +547,7 @@ function theme_entityinfo_controller_data($variables) {
     else {
       $value = t("FALSE");
     }
-    $output .= '<tr><td>' . t('fieldable') . '</td><td>' . $value  . '</td></tr>';
+    $output .= '<tr><td>' . t('fieldable') . '</td><td>' . $value . '</td></tr>';
   }
 
   $values_to_check = array('load hook', 'access callback', 'creation callback', 'save callback', 'deletion callback', 'revision deletion callback', 'view callback', 'form callback');
