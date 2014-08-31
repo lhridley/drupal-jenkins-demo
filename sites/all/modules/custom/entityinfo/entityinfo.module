@@ -134,9 +134,9 @@ function entityinfo_page_admin() {
       }
     }
     if (isset($infoobject->entities[$entity]['revision table'])) {
-      $revision_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['revision table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['revision table']] : NULL;
-      if ($revision_table_schema) {
-        $entityschema['revision_table_schema'] = $revision_table_schema;
+      $rev_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['revision table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['revision table']] : NULL;
+      if ($rev_table_schema) {
+        $entityschema['revision_table_schema'] = $rev_table_schema;
       }
     }
 
