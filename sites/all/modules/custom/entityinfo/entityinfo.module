@@ -518,29 +518,55 @@ function _entityinfo_get_literal_type($value) {
     if (isset($value['type'])) {
     $type = $value['type'];
     $literaltype = $value['type'];
-    if (isset($value['size'])) {
-      if (!in_array($value['size'], array('normal'))) {
-        $literaltype .= "/" . $value['size'];
-      }
-    }
-    if (in_array($type, array('int', 'float', 'numeric'))) {
-      if (isset($value['unsigned'])) {
-        if ($value['unsigned']) {
-          $literaltype .= '(unsigned)';
-        }
-      }
-    }
-    if (in_array($type, array('char', 'varchar', 'text'))) {
-      if (isset($value['length'])) {
-        $literaltype .= '(' . $value['length'] . ')';
-      }
-    }
-    if (in_array($type, array('numeric'))) {
-      $literaltype .= '(' . $value['precision'] . ":" . $value['scale'] . ')';
-    }
+    $literaltype .= _entityinfo_get_size($value);
+    $literaltype .= _entityinfo_number_info($type, $value);
+    $literaltype .= _entityinfo_get_string_length($type, $value);
   }
   else {
     $type = $literaltype = "error";
   }
   return $literaltype;
+}
+
+/**
+ * Get field size
+ */
+function _entityinfo_get_size($value) {
+  $output = NULL;
+  if (isset($value['size'])) {
+    if (!in_array($value['size'], array('normal'))) {
+      $output .= "/" . $value['size'];
+    }
+  }
+  return $output;
+}
+/**
+ * Gets unsigned / precision & scale for numeric fields
+ */
+function _entityinfo_number_info($type, $value) {
+  $output = NULL;
+  if (in_array($type, array('int', 'float', 'numeric'))) {
+    if (isset($value['unsigned'])) {
+      if ($value['unsigned']) {
+        $output .= '(unsigned)';
+      }
+    }
+  }
+  if (in_array($type, array('numeric'))) {
+    $output .= '(' . $value['precision'] . ":" . $value['scale'] . ')';
+  }
+  return $output;
+}
+
+/**
+ * Checks for length of character / string fields
+ */
+function _entityinfo_get_string_length($type, $value) {
+  $output = NULL;
+  if (in_array($type, array('char', 'varchar', 'text'))) {
+    if (isset($value['length'])) {
+      $output = '(' . $value['length'] . ')';
+    }
+  }
+  $return $output;
 }
