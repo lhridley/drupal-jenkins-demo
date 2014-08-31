@@ -334,62 +334,12 @@ function theme_entityinfo_tableschema($variables) {
   if (isset($variables['table_schema']['module'])) {
     $output .='<em>' . t('Defined by the module') . ' -- ' . $variables['table_schema']['module'] . '</em>';
   }
-  $output .= '<p>+ - ' . t('primary key') . '</p>';
-  $output .= '<p>& - ' . t('unique key') . '</p>';
-  $output .= '<p>* - ' . t('required field') . '</p>';
+  $output .= _entityinfo_get_field_keys();
   $output .= '<table>';
   $output .= '<tr><th>' . t('Field Name') . '</th><th>' . t('Type and Size') . '</th><th>' . t('Default Value') . '</th><th>' . t('Serialized') . '</th><th>' . t('Translatable') . '</th><th>' . t('Description') . '</th></tr>';
   foreach ($variables['table_schema']['fields'] as $key => $value) {
     $name = $key;
-    if (isset($value['not null'])) {
-      if ($value['not null']) {
-        $name .= " *";
-      }
-    }
-    if (isset($variables['table_schema']['primary key'])) {
-      if ($variables['table_schema']['primary key'][0] == $key) {
-        $name = "+ " . $name;
-      }
-    }
-    if (isset($variables['table_schema']['unique keys'])) {
-      foreach ($variables['table_schema']['unique keys'] as $kkey => $vvalue) {
-        if ($key == $kkey) {
-          $name = "& " . $name;
-        }
-      }
-    }
-    if (isset($value['type'])) {
-      $type = $value['type'];
-      $literaltype = $value['type'];
-      if (isset($value['size'])) {
-        if (!in_array($value['size'], array('normal'))) {
-          $literaltype .= "/" . $value['size'];
-        }
-      }
-      if (in_array($type, array('int', 'float', 'numeric'))) {
-        if (isset($value['unsigned'])) {
-          if ($value['unsigned']) {
-            $literaltype .= '(unsigned)';
-          }
-        }
-      }
-      if (in_array($type, array('char', 'varchar', 'text'))) {
-        if (isset($value['length'])) {
-          $literaltype .= '(' . $value['length'] . ')';
-        }
-      }
-      if (in_array($type, array('numeric'))) {
-        $literaltype .= '(' . $value['precision'] . ":" . $value['scale'] . ')';
-      }
-    }
-    else {
-      $type = $literaltype = "error";
-    }
-    $defaultvalue = isset($value['default']) ? $value['default'] : NULL;
-    $serialize = isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : NULL;
-    $translatable = isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : NULL;
-    $description = isset($value['description']) ? $value['description'] : NULL;
-    $output .= '<tr><td>' . $name . '</td><td>' . $literaltype . '</td><td>' . $defaultvalue . '</td><td>' . $serialize . '</td><td>' . $translatable . '</td><td>' . $description . '</td></tr>';
+    $output .= _entityinfo_get_field_info($name, $variables['table_schema'], $key, $value);
   }
   $output .= '</table>';
   if (isset($variables['table_schema']['foreign keys'])) {
@@ -440,9 +390,7 @@ function theme_entityinfo_bundle_fields($variables) {
   $output .= '<legend><span class="fieldset-legend">' . t('Attached Fields') . '</span></legend><div class="fieldset-wrapper">';
 
   $output .= '<h6>' . t('Attached Fields') . '</h6>';
-      $output .= '<p>+ - ' . t('primary key') . '</p>';
-      $output .= '<p>& - ' . t('unique key') . '</p>';
-      $output .= '<p>* - ' . t('required field') . '</p>';
+  $output .= _entityinfo_get_field_keys();
 
   foreach ($variables['fieldtables'] as $fieldname => $tableobject) {
     foreach ($tableobject as $tablename => $table) {
@@ -456,55 +404,7 @@ function theme_entityinfo_bundle_fields($variables) {
       foreach ($table['fields'] as $key => $value) {
         if (!in_array($key, array('entity_type', 'bundle', 'deleted', 'entity_id', 'revision_id', 'language', 'delta'))) {
           $name = $key;
-          if (isset($value['not null'])) {
-            if ($value['not null']) {
-              $name .= " *";
-            }
-          }
-          if (isset($variables['fieldtables'][$fieldname][$tablename]['primary key'])) {
-            if ($variables['fieldtables'][$fieldname][$tablename]['primary key'][0] == $key) {
-              $name = "+ " . $name;
-            }
-          }
-          if (isset($variables['fieldtables'][$fieldname][$tablename]['unique keys'])) {
-            foreach ($variables['fieldtables'][$fieldname][$tablename]['unique keys'] as $kkey => $vvalue) {
-              if ($key == $kkey) {
-                $name = "& " . $name;
-              }
-            }
-          }
-          if (isset($value['type'])) {
-            $type = $value['type'];
-            $literaltype = $value['type'];
-            if (isset($value['size'])) {
-              if (!in_array($value['size'], array('normal'))) {
-                $literaltype .= "/" . $value['size'];
-              }
-            }
-            if (in_array($type, array('int', 'float', 'numeric'))) {
-              if (isset($value['unsigned'])) {
-                if ($value['unsigned']) {
-                  $literaltype .= '(unsigned)';
-                }
-              }
-            }
-            if (in_array($type, array('char', 'varchar', 'text'))) {
-              if (isset($value['length'])) {
-                $literaltype .= '(' . $value['length'] . ')';
-              }
-            }
-            if (in_array($type, array('numeric'))) {
-              $literaltype .= '(' . $value['precision'] . ":" . $value['scale'] . ')';
-            }
-          }
-          else {
-            $type = $literaltype = "error";
-          }
-          $defaultvalue = isset($value['default']) ? $value['default'] : NULL;
-          $serialize = isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : NULL;
-          $translatable = isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : NULL;
-          $description = isset($value['description']) ? $value['description'] : NULL;
-          $output .= '<tr><td>' . $name . '</td><td>' . $literaltype . '</td><td>' . $defaultvalue . '</td><td>' . $serialize . '</td><td>' . $translatable . '</td><td>' . $description . '</td></tr>';
+          $output .= _entityinfo_get_field_info($name, $variables['fieldtables'][$fieldname][$tablename], $key, $value);
         }
       }
       $output .= '</table>';
@@ -559,3 +459,74 @@ function theme_entityinfo_controller_data($variables) {
   $output .= '</table>';
   return $output;
 }
+
+/**
+ * Returns field keys for table listings
+ */
+
+function _entityinfo_get_field_keys() {
+  $output = null;
+  $output .= '<p>+ - ' . t('primary key') . '</p>';
+  $output .= '<p>& - ' . t('unique key') . '</p>';
+  $output .= '<p>* - ' . t('required field') . '</p>';
+  return $output;
+}
+
+/**
+ * Returns field information as a table row
+ */
+function _entityinfo_get_field_info($name, $schema, $key, $value) {
+  $output = NULL;
+
+  if (isset($value['not null'])) {
+    if ($value['not null']) {
+      $name .= " *";
+    }
+  }
+  if (isset($schema['primary key'])) {
+    if ($schema['primary key'][0] == $key) {
+      $name = "+ " . $name;
+    }
+  }
+  if (isset($schema['unique keys'])) {
+    foreach ($schema['unique keys'] as $kkey => $vvalue) {
+      if ($key == $kkey) {
+        $name = "& " . $name;
+      }
+    }
+  }
+  if (isset($value['type'])) {
+    $type = $value['type'];
+    $literaltype = $value['type'];
+    if (isset($value['size'])) {
+      if (!in_array($value['size'], array('normal'))) {
+        $literaltype .= "/" . $value['size'];
+      }
+    }
+    if (in_array($type, array('int', 'float', 'numeric'))) {
+      if (isset($value['unsigned'])) {
+        if ($value['unsigned']) {
+          $literaltype .= '(unsigned)';
+        }
+      }
+    }
+    if (in_array($type, array('char', 'varchar', 'text'))) {
+      if (isset($value['length'])) {
+        $literaltype .= '(' . $value['length'] . ')';
+      }
+    }
+    if (in_array($type, array('numeric'))) {
+      $literaltype .= '(' . $value['precision'] . ":" . $value['scale'] . ')';
+    }
+  }
+  else {
+    $type = $literaltype = "error";
+  }
+  $defaultvalue = isset($value['default']) ? $value['default'] : NULL;
+  $serialize = isset($value['serialize']) ? ($value['serialize'] ? "TRUE" : "FALSE") : NULL;
+  $translatable = isset($value['translatable']) ? ($value['translatable'] ? "TRUE" : "FALSE") : NULL;
+  $description = isset($value['description']) ? $value['description'] : NULL;
+  $output .= '<tr><td>' . $name . '</td><td>' . $literaltype . '</td><td>' . $defaultvalue . '</td><td>' . $serialize . '</td><td>' . $translatable . '</td><td>' . $description . '</td></tr>';
+  return $output;
+}
+
