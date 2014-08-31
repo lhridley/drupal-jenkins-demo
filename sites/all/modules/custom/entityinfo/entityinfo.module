@@ -124,21 +124,10 @@ function entityinfo_page_admin() {
   $output = NULL;
 
   $pageoutput = NULL;
+
   foreach ($entityinfo_list as $entity) {
     //Database information for this entity
-    $entityschema = array();
-    if (isset($infoobject->entities[$entity]['base table'])) {
-      $base_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['base table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['base table']] : NULL;
-      if ($base_table_schema) {
-        $entityschema['base_table_schema'] = $base_table_schema;
-      }
-    }
-    if (isset($infoobject->entities[$entity]['revision table'])) {
-      $rev_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['revision table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['revision table']] : NULL;
-      if ($rev_table_schema) {
-        $entityschema['revision_table_schema'] = $rev_table_schema;
-      }
-    }
+    $entityschema = _entityinfo_get_entity_table_info($infoobject, $entity);
 
     $databaseinfo = theme('entityinfo_database_info', array(
       'base_table' => isset($infoobject->entities[$entity]['base table']) ? $infoobject->entities[$entity]['base table'] : NULL,
@@ -580,7 +569,7 @@ function _entityinfo_get_table_type($variables) {
  */
 function _entityinfo_get_foreign_keys($variables) {
   $output = NULL;
-   if (isset($variables['table_schema']['foreign keys'])) {
+  if (isset($variables['table_schema']['foreign keys'])) {
     $output .= '<h6>' . t('Foreign Key') . '</h6>';
     $output .= '<table>';
     $output .= '<tr><th>' . t('Key Name') . '</th><th>' . t('Table') . '</th><th>' . t('Relationship') . '</th></tr>';
@@ -619,4 +608,21 @@ function _entityinfo_get_table_indexes($variables) {
     }
   }
   return $output;
+}
+
+function _entityinfo_get_entity_table_info($infoobject, $entity) {
+  $entityschema = array();
+  if (isset($infoobject->entities[$entity]['base table'])) {
+    $base_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['base table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['base table']] : NULL;
+    if ($base_table_schema) {
+      $entityschema['base_table_schema'] = $base_table_schema;
+    }
+  }
+  if (isset($infoobject->entities[$entity]['revision table'])) {
+    $rev_table_schema = isset($infoobject->tableschema[$infoobject->entities[$entity]['revision table']]) ? $infoobject->tableschema[$infoobject->entities[$entity]['revision table']] : NULL;
+    if ($rev_table_schema) {
+      $entityschema['revision_table_schema'] = $rev_table_schema;
+    }
+  }
+  return $entityschema;
 }
