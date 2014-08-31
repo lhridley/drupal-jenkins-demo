@@ -636,6 +636,6 @@ function _entityinfo_get_revision_table($infoobject) {
   return isset($infoobject->entities[$entity]['revision table']) ? $infoobject->entities[$entity]['revision table'] : NULL;
 }
 
-function _entityinfo_get_revision_table($infoobject) {
+function _entityinfo_get_revision_table_schema($infoobject) {
   return isset($infoobject->entities[$entity]['schema_fields_sql']['revision table']) ? $infoobject->entities[$entity]['schema_fields_sql']['revision table'] : NULL;
 }
